@@ -269,83 +269,135 @@ button:disabled {
   text-align: center;
 }
 
-/* Card-style container used across screens */
-.panel {
-  background: var(--c-bg-deep);
-  border: 1px solid var(--c-border);
-  border-radius: var(--radius-card);
-  padding: 16px;
+/* === Card / deck-of-cards visual ===
+   Mirrors the Figma `Group 7` group (366×508) which contains three offset
+   rectangles plus a foreground card, all 320×478 in size. The container
+   keeps the 366×508 aspect so each layer can land at its exact offset. */
+.card-stack {
+  position: relative;
+  width: 100%;
+  max-width: 366px;
+  aspect-ratio: 366 / 508;
+  margin: 24px auto;
+  isolation: isolate;
 }
 
-.panel--card {
-  position: relative;
-  margin: 24px auto;
-  width: 100%;
-  max-width: 320px;
-  min-height: 360px;
-  padding: 28px 22px;
-  border-width: 4px;
-  box-shadow: var(--shadow-card);
+.card-stack > * {
+  position: absolute;
+  /* Card geometry is 320×478, expressed proportionally so it scales. */
+  width: calc(320 / 366 * 100%);
+  height: calc(478 / 508 * 100%);
+  background: var(--c-bg-deep);
+  border: 4px solid var(--c-border);
+  border-radius: 12px;
+}
+
+.card-stack__layer {
+  pointer-events: none;
+}
+
+/* Layer 3 — deepest, painted first. Figma offset: (46, 30). */
+.card-stack__layer--3 {
+  top: calc(26 / 500 * 100%);
+  left: calc(38 / 500 * 100%);
+}
+
+/* Layer 2 — middle. Figma offset: (28, 20). Width is 312 in Figma. */
+.card-stack__layer--2 {
+  top: calc(17 / 500 * 100%);
+  left: calc(26 / 500 * 100%);
+}
+
+/* Layer 1 — just behind the foreground. Figma offset: (10, 10). */
+.card-stack__layer--1 {
+  top: calc(9 / 500 * 100%);
+  left: calc(13 / 500 * 100%);
+}
+
+/* Foreground card — anchored top-left like the Figma `Group 10`. */
+.card {
+  top: 0;
+  left: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 16px;
+  padding: 24px 28px 48px;
   text-align: center;
+  color: var(--c-text);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
 }
 
-.panel--card::before,
-.panel--card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  border: 4px solid var(--c-border);
-  background: var(--c-bg-deep);
-  z-index: -1;
-}
-.panel--card::before {
-  transform: translate(8px, 8px);
-}
-.panel--card::after {
-  transform: translate(16px, 16px);
-}
-
-.panel--card .card-tag {
-  font-size: 18px;
-  color: var(--c-primary);
-  font-weight: 500;
-}
-
-.panel--card .card-word {
-  font-size: 32px;
-  font-weight: 600;
-  color: var(--c-primary);
-  margin: 4px 0;
-}
-
-.panel--card .card-hint {
-  font-size: 14px;
-  color: var(--c-text-muted);
-}
-
-.panel--card.is-back {
+.card.is-interactive {
   cursor: pointer;
+  transition: transform 120ms ease, filter 120ms ease;
+}
+
+.card.is-interactive:hover {
+  filter: brightness(1.05);
+}
+
+.card.is-interactive:active {
+  transform: translateY(1px);
+}
+
+.card--front {
+  border-color: var(--c-border-soft);
+}
+
+.card-art {
+  width: 60%;
+  max-width: 185px;
+  height: auto;
+  flex-shrink: 0;
   user-select: none;
+  pointer-events: none;
 }
 
-.panel--card.is-back .card-tag {
-  color: var(--c-text-dim);
-  font-size: 22px;
+.card-art--faded {
+  opacity: 0.3;
+}
+
+.card-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.card-title {
+  margin: 0;
+  font-size: 24px;
   font-weight: 500;
+  line-height: 1.4;
+  color: var(--c-primary);
 }
 
-.panel--card.is-back .card-hint {
+.card-title--muted {
   color: var(--c-text-dim);
 }
 
-.panel--card.is-spy .card-word {
-  color: #ffd97a;
+.card-sub {
+  margin: 0;
+  font-size: 16px;
+  color: var(--c-text-muted);
+  line-height: 1.4;
+}
+
+.card-sub--muted {
+  color: var(--c-text-dim);
+}
+
+.card-footnote {
+  position: absolute;
+  bottom: 16px;
+  left: 16px;
+  right: 16px;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--c-primary);
 }
 
 /* Countdown number display */

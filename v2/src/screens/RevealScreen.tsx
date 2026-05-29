@@ -1,7 +1,9 @@
 import { useState } from 'react'
 import { Screen } from '../components/Screen'
+import { Card } from '../components/Card'
 import { toFa } from '../game/logic'
 import type { GameConfig, RoundState } from '../game/types'
+import spyCardSrc from '../assets/spy-card.svg'
 
 interface RevealScreenProps {
   config: GameConfig
@@ -12,9 +14,9 @@ interface RevealScreenProps {
 }
 
 /**
- * Shows the role to a single player. Three states:
- *  1. Card back — tap the card to flip.
- *  2. Card front — show the role; tap the action to pass to the next player.
+ * One player at a time: tap the deck to flip → see your role → tap again to
+ * pass the phone. Layouts mirror the Figma frames `card-back`,
+ * `card-front-citisen`, and `card-front-spy`.
  */
 export function RevealScreen({ config, round, playerIndex, onNext }: RevealScreenProps) {
   const [revealed, setRevealed] = useState(false)
@@ -29,15 +31,13 @@ export function RevealScreen({ config, round, playerIndex, onNext }: RevealScree
     return (
       <Screen>
         <div className="center-block">
-          <button
-            type="button"
-            className="panel--card panel is-back"
-            onClick={() => setRevealed(true)}
-            aria-label="نمایش نقش"
-          >
-            <span className="card-tag">بازیکن {toFa(playerIndex + 1)}</span>
-            <span className="card-hint">برای دیدن کلمه روی کارت بزن</span>
-          </button>
+          <Card variant="back" onClick={() => setRevealed(true)}>
+            <img className="card-art card-art--faded" src={spyCardSrc} alt="" aria-hidden />
+            <div className="card-text">
+              <h2 className="card-title card-title--muted">بازیکن {toFa(playerIndex + 1)}</h2>
+              <p className="card-sub card-sub--muted">برای دیدن کلمه روی کارت بزن</p>
+            </div>
+          </Card>
         </div>
       </Screen>
     )
@@ -46,31 +46,24 @@ export function RevealScreen({ config, round, playerIndex, onNext }: RevealScree
   return (
     <Screen>
       <div className="center-block">
-        <div className={`panel--card panel ${isSpy ? 'is-spy' : ''}`}>
+        <Card variant="front" onClick={handlePass}>
           {isSpy ? (
-            <>
-              <span className="card-tag">جاسوس</span>
-              {config.spyGuide ? (
-                <span className="card-word">{round.word.category}</span>
-              ) : null}
-              <span className="card-hint">
-                سعی کن بفهمی شهروندها در مورد چی حرف می‌زنن!
-              </span>
-            </>
-          ) : (
-            <>
-              <span className="card-tag">شهروند</span>
-              <span className="card-word">{round.word.word}</span>
-              <span className="card-hint">دوباره بزن و گوشی رو به نفر بعدی بده</span>
-            </>
-          )}
-        </div>
-      </div>
-
-      <div className="footer-actions">
-        <button type="button" className="btn" onClick={handlePass}>
-          {playerIndex + 1 === config.playerCount ? 'شروع بازی' : 'نفر بعدی'}
-        </button>
+            <img className="card-art" src={spyCardSrc} alt="" aria-hidden />
+          ) : null}
+          <div className="card-text">
+            <h2 className="card-title">{isSpy ? 'جاسوس' : round.word.word}</h2>
+            <p className="card-sub">
+              {isSpy && config.spyGuide
+                ? `موضوع: ${round.word.category}`
+                : 'دوباره بزن و گوشی رو به نفر بعدی بده'}
+            </p>
+          </div>
+          {isSpy ? (
+            <p className="card-footnote">
+              سعی کن بفهمی شهروندها در مورد چی حرف میزنن!
+            </p>
+          ) : null}
+        </Card>
       </div>
     </Screen>
   )
