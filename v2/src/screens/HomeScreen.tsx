@@ -121,12 +121,12 @@ function Row({ icon, label, value, onInc, onDec }: RowProps) {
         <span>{label}</span>
       </span>
       <span className="setting-row__value">
-        <button type="button" className="stepper-btn" onClick={onDec} aria-label="کم کردن">
-          <MinusIcon width={16} height={16} />
+        <button type="button" className="stepper-btn" onClick={onInc} aria-label="اضافه کردن">
+          <PlusIcon width={32} height={32} />
         </button>
         <span className="setting-row__value-text">{toFa(value)}</span>
-        <button type="button" className="stepper-btn" onClick={onInc} aria-label="اضافه کردن">
-          <PlusIcon width={16} height={16} />
+        <button type="button" className="stepper-btn" onClick={onDec} aria-label="کم کردن">
+          <MinusIcon width={32} height={32} />
         </button>
       </span>
     </div>

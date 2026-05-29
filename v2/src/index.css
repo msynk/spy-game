@@ -203,7 +203,33 @@ button:disabled {
   align-items: center;
   gap: 8px;
   color: var(--c-text);
-  font-size: 14px;
+  font-size: 16px;
+}
+
+/* Emoji icons used in the settings rows — rendered with the OS color emoji
+   font so the glyph keeps the same multi-color look as in the Figma frame. */
+.emoji-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 22px;
+  line-height: 1;
+  font-family: 'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji',
+    'Twemoji Mozilla', sans-serif;
+}
+
+/* Raster icons exported from Figma. Pixel-art assets, so disable smoothing
+   to keep the crisp blocky edges seen in the source frame. */
+.img-icon {
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  object-fit: contain;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  user-select: none;
 }
 
 .setting-row__value {
@@ -222,8 +248,8 @@ button:disabled {
 }
 
 .stepper-btn {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   display: inline-flex;
   align-items: center;
   justify-content: center;

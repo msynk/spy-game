@@ -1,7 +1,13 @@
 /** Inline SVG icon set. Keeps the build asset-free and themable via currentColor. */
-import type { SVGProps } from 'react'
+import type { HTMLAttributes, ImgHTMLAttributes, SVGProps } from 'react'
+
+import playersSrc from '../assets/players.png'
+import spiesSrc from '../assets/spies.png'
+import timeSrc from '../assets/time.png'
 
 type IconProps = SVGProps<SVGSVGElement>
+type EmojiIconProps = HTMLAttributes<HTMLSpanElement>
+type ImageIconProps = Omit<ImgHTMLAttributes<HTMLImageElement>, 'src' | 'alt'>
 
 const baseProps = {
   width: 24,
@@ -15,6 +21,35 @@ const baseProps = {
   'aria-hidden': true,
 }
 
+/** Emoji icons rendered through the OS color emoji font so they keep their
+ *  original multi-color glyph (used as a fallback for unstyled rows). */
+function EmojiIcon({ children, className, ...rest }: EmojiIconProps) {
+  return (
+    <span
+      role="img"
+      aria-hidden
+      className={`emoji-icon${className ? ` ${className}` : ''}`}
+      {...rest}
+    >
+      {children}
+    </span>
+  )
+}
+
+/** Raster icon used by the home-screen settings rows — pulled straight from
+ *  the Figma frame so the pixel artwork stays identical. */
+function ImageIcon({ src, className, ...rest }: ImageIconProps & { src: string }) {
+  return (
+    <img
+      src={src}
+      alt=""
+      aria-hidden
+      className={`img-icon${className ? ` ${className}` : ''}`}
+      {...rest}
+    />
+  )
+}
+
 export function HomeIcon(props: IconProps) {
   return (
     <svg {...baseProps} {...props}>
@@ -23,36 +58,20 @@ export function HomeIcon(props: IconProps) {
   )
 }
 
-export function PlayersIcon(props: IconProps) {
-  return (
-    <svg {...baseProps} {...props}>
-      <circle cx="9" cy="8" r="3.5" />
-      <path d="M2.5 19c.6-3 3.4-4.5 6.5-4.5s5.9 1.5 6.5 4.5" />
-      <circle cx="17" cy="9" r="2.5" />
-      <path d="M16 14c2.5 0 4.5 1.2 5 3.5" />
-    </svg>
-  )
+export function PlayersIcon(props: ImageIconProps) {
+  return <ImageIcon src={playersSrc} {...props} />
 }
 
-export function SpyIcon(props: IconProps) {
-  return (
-    <svg {...baseProps} {...props}>
-      <path d="M3 12h18l-2-5H5z" />
-      <circle cx="7.5" cy="15.5" r="2.8" />
-      <circle cx="16.5" cy="15.5" r="2.8" />
-      <path d="M10.3 15.5h3.4" />
-    </svg>
-  )
+export function SpyIcon(props: ImageIconProps) {
+  return <ImageIcon src={spiesSrc} {...props} />
 }
 
-export function ClockIcon(props: IconProps) {
-  return (
-    <svg {...baseProps} {...props}>
-      <circle cx="12" cy="12" r="9" />
-      <path d="M12 7v5l3 2" />
-    </svg>
-  )
+export function ClockIcon(props: ImageIconProps) {
+  return <ImageIcon src={timeSrc} {...props} />
 }
+
+/** Kept for callers that still want the emoji version. */
+export { EmojiIcon }
 
 export function CheckIcon(props: IconProps) {
   return (
