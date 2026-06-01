@@ -349,10 +349,11 @@ button:disabled {
   align-items: center;
   justify-content: center;
   gap: 16px;
-  padding: 24px 28px 48px;
+  padding: 24px 28px;
   text-align: center;
   color: var(--c-text);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.35);
+  overflow: hidden;
 }
 
 .card.is-interactive {
@@ -372,6 +373,21 @@ button:disabled {
   border-color: var(--c-border-soft);
 }
 
+/* Faded full-card silhouette behind the title on the back card. */
+.card-bg-art {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  max-width: 220px;
+  height: auto;
+  opacity: 0.25;
+  pointer-events: none;
+  user-select: none;
+  z-index: 0;
+}
+
 .card-art {
   width: 60%;
   max-width: 185px;
@@ -379,10 +395,15 @@ button:disabled {
   flex-shrink: 0;
   user-select: none;
   pointer-events: none;
+  position: relative;
+  z-index: 1;
 }
 
-.card-art--faded {
-  opacity: 0.3;
+/* Circular spy face used on the spy reveal card. */
+.card-art--face {
+  width: 140px;
+  max-width: 45%;
+  image-rendering: auto;
 }
 
 .card-text {
@@ -390,6 +411,8 @@ button:disabled {
   flex-direction: column;
   align-items: center;
   gap: 12px;
+  position: relative;
+  z-index: 1;
 }
 
 .card-title {
@@ -415,15 +438,91 @@ button:disabled {
   color: var(--c-text-dim);
 }
 
-.card-footnote {
-  position: absolute;
-  bottom: 16px;
-  left: 16px;
-  right: 16px;
-  margin: 0;
-  font-size: 12px;
-  line-height: 1.5;
-  color: var(--c-primary);
+/* === Card transition animations ===
+   On "pass", the foreground card is dealt up and off the top of the deck
+   (`card-deal-out`) while the three deck layers stay put, then the next
+   player's card rises into place (`card-rise-in` on the back card). The
+   deal-out fill is `forwards` so the card holds its off-screen state until
+   React unmounts it; entrance animations intentionally use no fill so the
+   resting transform reverts to base and the interactive `:active` press
+   still works. */
+.card.is-dealing-out {
+  animation: card-deal-out 520ms cubic-bezier(0.45, 0, 0.7, 0.2) forwards;
+  pointer-events: none;
+  will-change: transform, opacity;
+  z-index: 2;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .card--back {
+    animation: card-rise-in 360ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .card--front {
+    animation: card-reveal-in 300ms ease;
+  }
+
+  /* Keep the deal-out override after the entrance rules so it wins. */
+  .card.is-dealing-out {
+    animation: card-deal-out 520ms cubic-bezier(0.45, 0, 0.7, 0.2) forwards;
+  }
+}
+
+/* Reduced motion: skip the flourish but still emit `animationend` quickly so
+   the pass-to-next flow completes. */
+@media (prefers-reduced-motion: reduce) {
+  .card.is-dealing-out {
+    animation: card-fade-out 180ms ease forwards;
+  }
+}
+
+@keyframes card-deal-out {
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  18% {
+    transform: translateY(-16px) rotate(-1.5deg) scale(1.03);
+    opacity: 1;
+  }
+  70% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-135%) rotate(-6deg) scale(0.92);
+    opacity: 0;
+  }
+}
+
+@keyframes card-rise-in {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes card-reveal-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.92);
+  }
+  60% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes card-fade-out {
+  to {
+    opacity: 0;
+  }
 }
 
 /* Countdown number display */

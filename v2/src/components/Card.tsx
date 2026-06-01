@@ -1,9 +1,13 @@
-import type { PropsWithChildren } from 'react'
+import type { AnimationEvent, PropsWithChildren } from 'react'
 
 interface CardProps {
   /** When true the card uses the lighter front outline (`#C1BBC5`). */
   variant?: 'front' | 'back'
   onClick?: () => void
+  /** Extra class names for the foreground card (used to drive animations). */
+  className?: string
+  /** Fires when a CSS animation on the foreground card ends. */
+  onAnimationEnd?: (event: AnimationEvent<HTMLElement>) => void
 }
 
 /**
@@ -16,7 +20,13 @@ interface CardProps {
  *   Rectangle 4 → (10, 10)
  *   Foreground  → (0, 0)
  */
-export function Card({ variant = 'front', onClick, children }: PropsWithChildren<CardProps>) {
+export function Card({
+  variant = 'front',
+  onClick,
+  className,
+  onAnimationEnd,
+  children,
+}: PropsWithChildren<CardProps>) {
   const isInteractive = typeof onClick === 'function'
   const Element = isInteractive ? 'button' : 'div'
 
@@ -28,7 +38,10 @@ export function Card({ variant = 'front', onClick, children }: PropsWithChildren
       <Element
         type={isInteractive ? 'button' : undefined}
         onClick={onClick}
-        className={`card card--${variant}${isInteractive ? ' is-interactive' : ''}`}
+        onAnimationEnd={onAnimationEnd}
+        className={`card card--${variant}${isInteractive ? ' is-interactive' : ''}${
+          className ? ` ${className}` : ''
+        }`}
       >
         {children}
       </Element>
