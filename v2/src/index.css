@@ -526,6 +526,14 @@ button:disabled {
 }
 
 /* Countdown number display */
+.countdown-clock {
+  display: block;
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 16px;
+  object-fit: contain;
+}
+
 .countdown {
   font-size: 96px;
   font-weight: 600;
