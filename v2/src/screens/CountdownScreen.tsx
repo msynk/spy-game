@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Screen } from '../components/Screen'
 import { toFa } from '../game/logic'
-import clockSrc from '../assets/clock.png'
+import watchSrc from '../assets/watch.png'
 
 interface CountdownScreenProps {
   onFinish: () => void
@@ -23,7 +23,7 @@ export function CountdownScreen({ onFinish }: CountdownScreenProps) {
   return (
     <Screen>
       <div className="center-block">
-        <img src={clockSrc} alt="" className="countdown-clock" aria-hidden="true" />
+        <img src={watchSrc} alt="" className="stopwatch" aria-hidden="true" />
         <div className="countdown" key={n} aria-live="polite">
           {toFa(Math.max(1, n))}
         </div>

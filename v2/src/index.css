@@ -525,13 +525,33 @@ button:disabled {
   }
 }
 
-/* Countdown number display */
-.countdown-clock {
+/* Stopwatch artwork shared by the countdown (3-2-1) and the round timer.
+   Matches the prominent stopwatch in the Figma start/waiting frames. */
+.stopwatch {
   display: block;
-  width: 96px;
-  height: 96px;
-  margin: 0 auto 16px;
+  width: 168px;
+  height: 168px;
+  margin: 0 auto 8px;
   object-fit: contain;
+  user-select: none;
+}
+
+/* When the round drops under 10s the red stopwatch ticks with a subtle
+   pulse to reinforce the urgency shown in the "waiting page-less 10s" frame. */
+@media (prefers-reduced-motion: no-preference) {
+  .stopwatch.is-warn {
+    animation: stopwatch-pulse 1s ease-in-out infinite;
+  }
+}
+
+@keyframes stopwatch-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
 }
 
 .countdown {
@@ -570,6 +590,37 @@ button:disabled {
   text-align: center;
   margin: 12px auto;
   max-width: 280px;
+}
+
+/* End screen — spy reveal */
+.end-hero {
+  display: block;
+  width: 160px;
+  height: 160px;
+  margin: 0 auto 8px;
+  border-radius: 999px;
+  object-fit: cover;
+  background: var(--c-bg-deep);
+  box-shadow: var(--shadow-card);
+  user-select: none;
+}
+
+.end-reveal {
+  margin: 0;
+  font-size: 18px;
+  color: var(--c-text-muted);
+  text-align: center;
+  line-height: 1.5;
+}
+
+.end-reveal__value {
+  color: var(--c-primary);
+  font-weight: 600;
+}
+
+.end-reveal--muted {
+  font-size: 14px;
+  color: var(--c-text-dim);
 }
 
 /* End screen role list */

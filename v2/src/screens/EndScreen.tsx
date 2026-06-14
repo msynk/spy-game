@@ -2,6 +2,7 @@ import { Screen } from '../components/Screen'
 import { HomeIcon } from '../components/Icons'
 import { toFa } from '../game/logic'
 import type { GameConfig, RoundState } from '../game/types'
+import spyHeroSrc from '../assets/logo.png'
 
 interface EndScreenProps {
   config: GameConfig
@@ -11,7 +12,8 @@ interface EndScreenProps {
 }
 
 export function EndScreen({ config, round, onPlayAgain, onHome }: EndScreenProps) {
-  const players = Array.from({ length: config.playerCount }, (_, i) => i)
+  const spyNames = round.spyIndices.map((idx) => `بازیکن ${toFa(idx + 1)}`)
+  const spyLabel = spyNames.length > 1 ? 'جاسوس‌ها' : 'جاسوس'
 
   return (
     <Screen
@@ -21,26 +23,21 @@ export function EndScreen({ config, round, onPlayAgain, onHome }: EndScreenProps
         </button>
       }
     >
-      <h1 className="title" style={{ textAlign: 'center', marginBottom: 12 }}>
-        پایان بازی
-      </h1>
+      <div className="center-block">
+        <img src={spyHeroSrc} alt="" className="end-hero" aria-hidden="true" />
 
-      <p className="subtitle" style={{ textAlign: 'center', marginBottom: 16 }}>
-        کلمه: <strong style={{ color: 'var(--c-text)' }}>{round.word.word}</strong>
-      </p>
+        <p className="end-reveal">
+          {spyLabel}:{' '}
+          <strong className="end-reveal__value">{spyNames.join('، ')}</strong>
+        </p>
 
-      <div className="scroll-area">
-        <ul className="role-list" aria-label="نقش بازیکنان">
-          {players.map((idx) => {
-            const isSpy = round.spyIndices.includes(idx)
-            return (
-              <li key={idx} className={`role-row ${isSpy ? 'is-spy' : ''}`}>
-                <span className="role-row__name">بازیکن {toFa(idx + 1)}</span>
-                <span className="role-row__tag">{isSpy ? 'جاسوس' : 'شهروند'}</span>
-              </li>
-            )
-          })}
-        </ul>
+        <p className="end-reveal">
+          کلمه: <strong className="end-reveal__value">{round.word.word}</strong>
+        </p>
+
+        {config.spyGuide ? (
+          <p className="end-reveal end-reveal--muted">موضوع: {round.word.category}</p>
+        ) : null}
       </div>
 
       <div className="footer-actions">

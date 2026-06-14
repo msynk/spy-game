@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Screen } from '../components/Screen'
 import { formatTime } from '../game/logic'
+import watchSrc from '../assets/watch.png'
+import watchRedSrc from '../assets/watch-red.png'
 
 interface TimerScreenProps {
   totalSeconds: number
@@ -32,6 +34,12 @@ export function TimerScreen({ totalSeconds, onFinish }: TimerScreenProps) {
   return (
     <Screen>
       <div className="center-block">
+        <img
+          src={isWarning ? watchRedSrc : watchSrc}
+          alt=""
+          className={`stopwatch ${isWarning ? 'is-warn' : ''}`}
+          aria-hidden="true"
+        />
         <div
           className={`timer-display ${isWarning ? 'is-warn' : ''}`}
           aria-live="polite"
